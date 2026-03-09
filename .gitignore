@@ -1,0 +1,80 @@
+# =====================
+# JAVA / SPRING BOOT
+# =====================
+
+# Compilados
+target/
+*.class
+*.jar
+*.war
+*.ear
+
+# Maven
+.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+# IntelliJ IDEA
+.idea/
+*.iws
+*.iml
+*.ipr
+out/
+
+#Vscode
+.vscode/
+
+# Eclipse (por precaução)
+.classpath
+.project
+.settings/
+
+# Spring Boot
+spring-shell.log
+backend/src/main/resources/application.properties
+
+# =====================
+# REACT / NODE
+# =====================
+
+# Dependências
+frontend/node_modules/
+
+# Build gerado
+frontend/dist/
+frontend/build/
+
+# Cache
+frontend/.vite/
+frontend/.eslintcache
+
+
+# =====================
+# VARIÁVEIS DE AMBIENTE
+# =====================
+
+.env
+.env.local
+.env.production
+.env.development
+*.env
+
+
+# =====================
+# SISTEMA OPERATIVO
+# =====================
+
+# Linux/Mac
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+#Windows
+Desktop.ini
+$RECYCLE.BIN/
+
+# =====================
+# DOCKER
+# =====================
+docker-volumes/
