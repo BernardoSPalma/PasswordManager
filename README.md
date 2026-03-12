@@ -5,7 +5,7 @@ A full-stack password manager application built with security as a core principl
 ## Tech Stack
 
 **Backend:** Java 21, Spring Boot 3.5, Spring Security, Spring Data JPA
-**Frontend:** React, TypeScript, TailwindCSS
+**Frontend:** React Native, TypeScript, Expo
 **Database:** PostgreSQL
 **Infrastructure:** Docker
 
