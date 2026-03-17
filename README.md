@@ -24,7 +24,7 @@ Passwords are never stored in plain text. The application uses a two-layer secur
 
 - [x] Database setup and JPA entities
 - [x] AES-256-GCM encryption service
-- [ ] User registration and authentication with JWT
+- [x] User registration and authentication with JWT
 - [ ] Password entry CRUD operations
 - [ ] React frontend
 - [ ] Docker setup
