@@ -4,7 +4,6 @@ import com.palma.password_manager.dto.PasswordEntryDTO;
 import com.palma.password_manager.model.PasswordEntry;
 import com.palma.password_manager.model.User;
 import com.palma.password_manager.repository.PasswordEntryRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 
@@ -18,8 +17,7 @@ public class PasswordEntryService {
 
     private final PasswordEntryRepository passwordEntryRepository;
     private final CryptoService cryptoService;
-
-    @Autowired
+    
     public PasswordEntryService(CryptoService cryptoService, PasswordEntryRepository passwordEntryRepository){
         this.cryptoService = cryptoService;
         this.passwordEntryRepository = passwordEntryRepository;

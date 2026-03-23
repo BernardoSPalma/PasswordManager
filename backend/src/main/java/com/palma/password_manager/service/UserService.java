@@ -2,7 +2,6 @@ package com.palma.password_manager.service;
 
 import com.palma.password_manager.model.User;
 import com.palma.password_manager.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -19,7 +18,6 @@ public class UserService {
     private final CryptoService cryptoService;
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(LOG_ROUNDS);
 
-    @Autowired
     public UserService(UserRepository userRepository, CryptoService cryptoService){
         this.userRepository = userRepository;
         this.cryptoService = cryptoService;
