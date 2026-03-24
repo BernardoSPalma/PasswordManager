@@ -49,14 +49,27 @@ public class PasswordEntryService {
     public void updateEntry(User user, String newUsername, String newPassword, String newNotes, long entryId, SecretKey key) throws Exception{
         PasswordEntry dataToUpdate = passwordEntryRepository.findById(entryId).orElseThrow(() -> new IllegalArgumentException("Entry not found"));
         checkEntryBelongToUser(user, dataToUpdate);
-        byte[] encryptedUsername = cryptoService.encryptData(newUsername.getBytes(StandardCharsets.UTF_8),key);
-        byte[] encryptedPassword = cryptoService.encryptData(newPassword.getBytes(StandardCharsets.UTF_8),key);
-        byte[] encryptedNotes = newNotes != null
-                ? cryptoService.encryptData(newNotes.getBytes(StandardCharsets.UTF_8),key)
+        byte[] encryptedUsername = newUsername != null
+                ? cryptoService.encryptData(newUsername.getBytes(StandardCharsets.UTF_8),key)
+                :null;
+        byte[] encryptedPassword = newPassword != null
+                ? cryptoService.encryptData(newPassword.getBytes(StandardCharsets.UTF_8),key)
                 : null;
-        dataToUpdate.setUsernameEncrypted(encryptedUsername);
-        dataToUpdate.setPasswordEncrypted(encryptedPassword);
-        dataToUpdate.setNotesEncrypted(encryptedNotes);
+        if(encryptedUsername != null){
+            dataToUpdate.setUsernameEncrypted(encryptedUsername);
+        }
+        if(encryptedPassword != null){
+            dataToUpdate.setPasswordEncrypted(encryptedPassword);
+        }
+        if(newNotes != null){
+            if(newNotes.isEmpty()){
+                dataToUpdate.setNotesEncrypted(null);
+            }
+            else{
+                byte[] encryptedNotes = cryptoService.encryptData(newNotes.getBytes(StandardCharsets.UTF_8),key);
+                dataToUpdate.setNotesEncrypted(encryptedNotes);
+            }
+        }
         dataToUpdate.setUpdatedAt(LocalDateTime.now());
         passwordEntryRepository.save(dataToUpdate);
     }
