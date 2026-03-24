@@ -3,12 +3,10 @@ package com.palma.password_manager.controller;
 import com.palma.password_manager.model.PasswordEntry;
 import com.palma.password_manager.model.User;
 import com.palma.password_manager.service.PasswordEntryService;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import javax.crypto.SecretKey;
 import java.util.List;
 
 @RestController
