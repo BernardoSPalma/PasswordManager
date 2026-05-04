@@ -5,6 +5,7 @@ import { View, Text, StyleSheet, TextInput, TouchableOpacity } from 'react-nativ
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import * as SecureStore from 'expo-secure-store';
 
 export default function registerScreen(){
 
@@ -25,13 +26,18 @@ export default function registerScreen(){
         password: password
       });
 
-      await AsyncStorage.setItem('token', response.data.token);
-      await AsyncStorage.setItem('MasterPassword', password);
+      const loginResponse = await axios.post(`${API_URL}/api/auth/login`,{
+        email: email,
+        password: password
+      });
+
+      await SecureStore.setItemAsync('token', loginResponse.data.token);
+      await SecureStore.setItemAsync('MasterPassword', password);
 
       router.replace('/(tabs)/entries');
     
     } catch (error) {
-        alert('Email already registered');
+      setError('Error creating account')
     }
   }
 
@@ -68,19 +74,16 @@ export default function registerScreen(){
             <TouchableOpacity
                 style={styles.touchable}
                 onPress={handleRegister}>
-                    <Text style={styles.text}>Login</Text>
+                    <Text style={styles.text}>Register</Text>
             </TouchableOpacity>
 
             <Text style={styles.textCreateAccount}>
-              Already have and account? Enter <TouchableOpacity
-                onPress={() => {router.replace('/login')}}>
-                  <Text style={styles.buttonCreateAccount}>here</Text>
-              </TouchableOpacity>
+              Already have an account? Enter <Text onPress={() => {router.replace('/login')}} style={styles.buttonCreateAccount}>here</Text>
             </Text>
 
             <TouchableOpacity
                 onPress={() => {router.replace('/')}}>
-                <Ionicons name={"home"} size={15} color={'#21578C'}/>
+                <Ionicons name={"home"} size={15} color={'#38BDF8'}/>
             </TouchableOpacity>
 
         </View>
@@ -108,7 +111,7 @@ const styles = StyleSheet.create({
   touchable: {
     width: '30%',
     alignItems: 'center',
-    backgroundColor: '#21578C',
+    backgroundColor: '#38BDF8',
     borderRadius: 8,
     padding: 10,
     marginBottom: 10,
@@ -141,7 +144,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   buttonCreateAccount: {
-    textDecorationLine: 'underline',
-    color: 'rgb(33, 87, 140)'
+    color: '#38BDF8'
   }
 });

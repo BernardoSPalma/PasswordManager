@@ -5,6 +5,7 @@ import { View, Text, StyleSheet, TextInput, TouchableOpacity } from 'react-nativ
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import * as SecureStore from 'expo-secure-store';
 
 export default function loginScreen(){
 
@@ -25,8 +26,8 @@ export default function loginScreen(){
         password: password
       });
 
-      await AsyncStorage.setItem('token', response.data.token);
-      await AsyncStorage.setItem('MasterPassword', password);
+      await SecureStore.setItemAsync('token', response.data.token);
+      await SecureStore.setItemAsync('MasterPassword', password);
 
       router.replace('/(tabs)/entries');
     
@@ -72,15 +73,12 @@ export default function loginScreen(){
             </TouchableOpacity>
 
             <Text style={styles.textCreateAccount}>
-              Don't have an account? Create one <TouchableOpacity
-                onPress={() => {router.replace('/register')}}>
-                  <Text style={styles.buttonCreateAccount}>here</Text>
-              </TouchableOpacity>
+              Don't have an account? Create one <Text onPress={() => {router.replace('/register')}} style={styles.buttonCreateAccount}>here</Text>
             </Text>
 
             <TouchableOpacity
                 onPress={() => {router.replace('/')}}>
-                <Ionicons name={"home"} size={15} color={'#21578C'}/>
+                <Ionicons name={"home"} size={15} color={'#38BDF8'}/>
             </TouchableOpacity>
 
         </View>
@@ -108,7 +106,7 @@ const styles = StyleSheet.create({
   touchable: {
     width: '30%',
     alignItems: 'center',
-    backgroundColor: '#21578C',
+    backgroundColor: '#38BDF8',
     borderRadius: 8,
     padding: 10,
     marginBottom: 10,
@@ -141,7 +139,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   buttonCreateAccount: {
-    textDecorationLine: 'underline',
-    color: 'rgb(33, 87, 140)'
+    color: '#38BDF8'
   }
 });
