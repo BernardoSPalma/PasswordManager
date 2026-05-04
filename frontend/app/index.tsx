@@ -71,6 +71,13 @@ export default function indexScreen(){
                     <Text style={styles.text}>Login</Text>
             </TouchableOpacity>
 
+            <Text style={styles.textCreateAccount}>
+              Don't have an account? Create one <TouchableOpacity
+                onPress={() => {router.replace('/register')}}>
+                  <Text style={styles.buttonCreateAccount}>here</Text>
+              </TouchableOpacity>
+            </Text>
+
         </View>
     )
 }
@@ -101,7 +108,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgb(33, 87, 140)',
     borderRadius: 8,
     padding: 10,
-    marginBottom: 10
+    marginBottom: 10,
+    marginTop: 10
   },
   text: {
     color: '#fff'
@@ -124,5 +132,13 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     alignItems: 'center',
     paddingRight: 10,
+  },
+  textCreateAccount: {
+    marginTop: 25,
+    fontSize: 12,
+  },
+  buttonCreateAccount: {
+    textDecorationLine: 'underline',
+    color: 'rgb(33, 87, 140)'
   }
 });
