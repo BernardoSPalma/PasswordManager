@@ -82,3 +82,6 @@ $RECYCLE.BIN/
 # DOCKER
 # =====================
 docker-volumes/
+
+#
+frontend/constants/api.ts
