@@ -1,144 +1,70 @@
-import { API_URL } from '@/constants/api';
-import axios from 'axios';
-import { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { router } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
+import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from "react-native";
+import { LinearGradient } from 'expo-linear-gradient';
+import {router} from 'expo-router';
 
-export default function indexScreen(){
+export default function homeScreen(){
 
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
-    const [error, setError] = useState('')
-    const [showPassword, setShowPassword] = useState(false)
+  const { width } = Dimensions.get('window');
 
-    async function handleLogin(){
-      if(!email || !password){
-        setError('Please fill all the fields')
-        return;
-      }
-      setError('')
-      try{
-      const response = await axios.post(`${API_URL}/api/auth/login`,{
-        email: email,
-        password: password
-      });
-
-      await AsyncStorage.setItem('token', response.data.token);
-      await AsyncStorage.setItem('MasterPassword', password);
-
-      router.replace('/(tabs)/entries');
+  return(
     
-    } catch (error) {
-        alert('Email or Password Incorrect');
-    }
-  }
-
-
-    return(
-        <View style={styles.container}>
+    <LinearGradient
+      colors={['#1E293B', '#0F172A']} 
+      style={styles.container}
+    >
+     <View style={styles.container}>
+        
+          <TouchableOpacity 
+            onPress = {() => {router.replace('/register')}}
+            style={styles.button}
+            activeOpacity={0.8}
+          >
             
-            <Text style={styles.title}>Welcome Again</Text>
+            <Text style={styles.text}>Create an account</Text>
 
-            <TextInput 
-                style={styles.input}
-                value={email} 
-                onChangeText={setEmail}
-                placeholder="Email"
-                />
-            
-            <View style={styles.passwordContainer}>
-              <TextInput
-                  secureTextEntry ={!showPassword}
-                  style={styles.passwordInput}
-                  value={password} 
-                  onChangeText={setPassword}
-                  placeholder="Password"
-              />
-              <TouchableOpacity
-                onPress={() => setShowPassword(!showPassword)}>
-                  <Ionicons name={showPassword ? "eye-off" : "eye"} size={24} color="grey" />
-              </TouchableOpacity>
-            </View>
-            
-            {error ? <Text 
-                style={styles.error}>{error}</Text> : null}
-            
-            <TouchableOpacity
-                style={styles.touchable}
-                onPress={handleLogin}>
-                    <Text style={styles.text}>Login</Text>
-            </TouchableOpacity>
+          </TouchableOpacity>
 
-            <Text style={styles.textCreateAccount}>
-              Don't have an account? Create one <TouchableOpacity
-                onPress={() => {router.replace('/register')}}>
-                  <Text style={styles.buttonCreateAccount}>here</Text>
-              </TouchableOpacity>
-            </Text>
+          <TouchableOpacity 
+            onPress = {() => {router.replace('/login')}}
+             style={styles.button}
+             activeOpacity={0.8}
+          >
 
-        </View>
-    )
+            <Text style={styles.text}>Enter on your account</Text>
+
+          </TouchableOpacity>
+
+      </View>
+
+    </LinearGradient>
+    
+   
+  )
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
+    paddingHorizontal: 20, 
   },
-  input: {
-    width: '80%',
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 8,
-    padding: 10,
-    marginBottom: 10,
-  },
-  passwordInput: {
-    flex: 1,
-    padding: 10
-  },
-  touchable: {
-    width: '30%',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: 'rgb(33, 87, 140)',
-    backgroundColor: 'rgb(33, 87, 140)',
-    borderRadius: 8,
-    padding: 10,
-    marginBottom: 10,
-    marginTop: 10
+  button: {
+    width: '100%',
+    backgroundColor: '#38BDF8',
+    padding: 16,
+    borderRadius: 12,
+    marginBottom: 16,
+    elevation: 4,
+    shadowColor: '#38BDF8',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8
   },
   text: {
-    color: '#fff'
-  },
-  title: {
+    color: '#FFFFFF',
+    fontSize: 16,
     fontWeight: 'bold',
-    fontSize: 25,
-    marginBottom: 25
+    textAlign: 'center',
   },
-  error: {
-    color: 'red',
-    marginBottom: 10
-  },
-  passwordContainer: {
-    flexDirection: 'row',
-    width: '80%',
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 8,
-    marginBottom: 10,
-    alignItems: 'center',
-    paddingRight: 10,
-  },
-  textCreateAccount: {
-    marginTop: 25,
-    fontSize: 12,
-  },
-  buttonCreateAccount: {
-    textDecorationLine: 'underline',
-    color: 'rgb(33, 87, 140)'
-  }
-});
+})

@@ -6,21 +6,21 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 
-export default function registerScreen(){
+export default function loginScreen(){
 
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [error, setError] = useState('')
     const [showPassword, setShowPassword] = useState(false)
 
-    async function handleRegister(){
+    async function handleLogin(){
       if(!email || !password){
         setError('Please fill all the fields')
         return;
       }
       setError('')
       try{
-      const response = await axios.post(`${API_URL}/api/auth/register`,{
+      const response = await axios.post(`${API_URL}/api/auth/login`,{
         email: email,
         password: password
       });
@@ -31,7 +31,7 @@ export default function registerScreen(){
       router.replace('/(tabs)/entries');
     
     } catch (error) {
-        alert('Email already registered');
+        alert('Email or Password Incorrect');
     }
   }
 
@@ -39,7 +39,7 @@ export default function registerScreen(){
     return(
         <View style={styles.container}>
             
-            <Text style={styles.title}>Create Your Account</Text>
+            <Text style={styles.title}>Welcome Again</Text>
 
             <TextInput 
                 style={styles.input}
@@ -67,13 +67,13 @@ export default function registerScreen(){
             
             <TouchableOpacity
                 style={styles.touchable}
-                onPress={handleRegister}>
+                onPress={handleLogin}>
                     <Text style={styles.text}>Login</Text>
             </TouchableOpacity>
 
             <Text style={styles.textCreateAccount}>
-              Already have and account? Enter <TouchableOpacity
-                onPress={() => {router.replace('/login')}}>
+              Don't have an account? Create one <TouchableOpacity
+                onPress={() => {router.replace('/register')}}>
                   <Text style={styles.buttonCreateAccount}>here</Text>
               </TouchableOpacity>
             </Text>
