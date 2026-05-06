@@ -61,7 +61,20 @@ export default function registerScreen(){
       router.replace('/(tabs)/entries');
     
     } catch (error) {
-      setError('Error creating account')
+      if(axios.isAxiosError(error)){
+        if(error.response?.status === 409){
+          setError('Email already in use')
+        }
+        else if(error.response?.status === 401){
+          setError('Incorrect password')
+        }
+        else{
+          setError('Error creating account')
+        }
+      }
+      else{
+        setError('Unexpected error, please try again')
+      }
     }
   }
 
