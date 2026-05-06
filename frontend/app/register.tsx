@@ -1,7 +1,7 @@
 import { API_URL } from '@/constants/api';
 import axios from 'axios';
 import { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import * as SecureStore from 'expo-secure-store';
@@ -12,6 +12,7 @@ export default function registerScreen(){
     const [password, setPassword] = useState('')
     const [error, setError] = useState('')
     const [showPassword, setShowPassword] = useState(false)
+    const [loading, setLoading] = useState(false)
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     function validatePassword(password: string): boolean{
@@ -45,6 +46,7 @@ export default function registerScreen(){
 
       setError('')
       try{
+      setLoading(true)
       const response = await axios.post(`${API_URL}/api/auth/register`,{
         email: email,
         password: password
@@ -57,16 +59,13 @@ export default function registerScreen(){
 
       await SecureStore.setItemAsync('token', loginResponse.data.token);
       await SecureStore.setItemAsync('MasterPassword', password);
-
+      
       router.replace('/(tabs)/entries');
     
     } catch (error) {
       if(axios.isAxiosError(error)){
         if(error.response?.status === 409){
           setError('Email already in use')
-        }
-        else if(error.response?.status === 401){
-          setError('Incorrect password')
         }
         else{
           setError('Error creating account')
@@ -75,6 +74,9 @@ export default function registerScreen(){
       else{
         setError('Unexpected error, please try again')
       }
+    }
+    finally{
+      setLoading(false)
     }
   }
 
@@ -108,11 +110,14 @@ export default function registerScreen(){
             {error ? <Text 
                 style={styles.error}>{error}</Text> : null}
             
-            <TouchableOpacity
-                style={styles.touchable}
-                onPress={handleRegister}>
-                    <Text style={styles.text}>Register</Text>
-            </TouchableOpacity>
+            {loading 
+              ? <ActivityIndicator size="large" color="#38BDF8" />
+              : <TouchableOpacity
+                  style={styles.touchable}
+                  onPress={handleRegister}>
+                      <Text style={styles.text}>Register</Text>
+              </TouchableOpacity>
+            }
 
             <Text style={styles.textCreateAccount}>
               Already have an account? Enter <Text onPress={() => {router.replace('/login')}} style={styles.buttonCreateAccount}>here</Text>

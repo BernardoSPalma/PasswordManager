@@ -1,5 +1,7 @@
 package com.palma.password_manager.service;
 
+import com.palma.password_manager.exception.EmailAlreadyExistsException;
+import com.palma.password_manager.exception.EmailNotFoundException;
 import com.palma.password_manager.model.User;
 import com.palma.password_manager.repository.UserRepository;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -49,14 +51,14 @@ public class UserService {
     private void checkNewEmail(String email){
         User user = userRepository.findByEmail(email);
         if(user != null){
-            throw new IllegalArgumentException("Email already in use");
+            throw new EmailAlreadyExistsException("Email already in use");
         }
     }
 
     private User checkOldEmail(String email) {
         User user = userRepository.findByEmail(email);
         if (user == null) {
-            throw new IllegalArgumentException("Email does not exists in DataBase");
+            throw new EmailNotFoundException("Email does not exists in DataBase");
         }
         return user;
     }
