@@ -12,12 +12,37 @@ export default function registerScreen(){
     const [password, setPassword] = useState('')
     const [error, setError] = useState('')
     const [showPassword, setShowPassword] = useState(false)
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    async function handleRegister(){
+    function validatePassword(password: string): boolean{
       if(!email || !password){
         setError('Please fill all the fields')
+        return false;
+      }
+      if(!emailRegex.test(email)){
+        setError('Invalid email format')
+        return false;
+      }
+      if(!/[A-Z]/.test(password)){
+        setError('Password must have at least one uppercase letter')
+        return false;
+      }
+      if(!/[a-z]/.test(password)){
+        setError('Password must have at least one lowercase letter')
+        return false;
+      }
+      if(!/[0-9]/.test(password)){
+        setError('Passwrd must have at least one number')
+        return false;
+      }
+      return true;
+    }
+
+    async function handleRegister(){
+      if(!validatePassword(password)){
         return;
       }
+
       setError('')
       try{
       const response = await axios.post(`${API_URL}/api/auth/register`,{
