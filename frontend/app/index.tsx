@@ -1,10 +1,7 @@
-import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from "react-native";
-import { LinearGradient } from 'expo-linear-gradient';
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import {router} from 'expo-router';
 
 export default function homeScreen(){
-
-  const { width } = Dimensions.get('window');
 
   return(
     
