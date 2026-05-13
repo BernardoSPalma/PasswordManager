@@ -1,5 +1,6 @@
 package com.palma.password_manager.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -19,15 +20,18 @@ public class User {
     private String email;
 
     @Column(nullable = false)
+    @JsonIgnore
     private String passwordHash;
 
     @Column(nullable = false)
+    @JsonIgnore
     private byte[] kdfSalt;
 
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "user")
+    @JsonIgnore
     private List<PasswordEntry> password;
 
     public Long getId() {

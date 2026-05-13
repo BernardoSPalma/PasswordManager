@@ -1,3 +1,5 @@
+export const MAIN_LIGHT_BLUE = '#38BDF8';
+export const MAIN_WHITE = '#fff';
 const tintColorLight = '#2f95dc';
 const tintColorDark = '#fff';
 

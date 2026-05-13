@@ -1,5 +1,6 @@
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import {router} from 'expo-router';
+import { MAIN_LIGHT_BLUE, MAIN_WHITE } from "@/constants/Colors";
 
 export default function homeScreen(){
 
@@ -62,42 +63,42 @@ const styles = StyleSheet.create({
     fontSize: 16
   },
   popText: {
-    color: '#38BDF8'
+    color: MAIN_LIGHT_BLUE
   },
   primaryButton: {
     width:'80%',
-    backgroundColor: '#38BDF8',
+    backgroundColor: MAIN_LIGHT_BLUE,
     padding: 16,
     borderRadius: 12,
     marginBottom: 16,
     elevation: 4,
-    shadowColor: '#38BDF8',
+    shadowColor: MAIN_LIGHT_BLUE,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8
   },
   secondaryButton:{
     width:'80%',
-    backgroundColor: '#fff',
+    backgroundColor: MAIN_WHITE,
     borderWidth: 2,
-    borderColor: '#38BDF8',
+    borderColor: MAIN_LIGHT_BLUE,
     padding: 16,
     borderRadius: 12,
     marginBottom: 16,
     elevation: 4,
-    shadowColor: '#38BDF8',
+    shadowColor: MAIN_LIGHT_BLUE,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8
   },
   primaryText: {
-    color: '#FFFFFF',
+    color: MAIN_WHITE,
     fontSize: 16,
     fontWeight: 'bold',
     textAlign: 'center',
   },
   secondaryText: {
-    color: '#38BDF8',
+    color: MAIN_LIGHT_BLUE,
     fontSize: 16,
     fontWeight: 'bold',
     textAlign: 'center'

@@ -1,5 +1,6 @@
 package com.palma.password_manager.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -29,6 +30,7 @@ public class PasswordEntry {
 
     @ManyToOne
     @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "fk_password_entries_user"))
+    @JsonIgnore
     private User user;
 
     public Long getId() {

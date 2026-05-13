@@ -5,6 +5,7 @@ import { View, Text, StyleSheet, TextInput, TouchableOpacity, ActivityIndicator 
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import * as SecureStore from 'expo-secure-store';
+import { MAIN_LIGHT_BLUE, MAIN_WHITE } from '@/constants/Colors';
 
 export default function registerScreen(){
 
@@ -111,7 +112,7 @@ export default function registerScreen(){
                 style={styles.error}>{error}</Text> : null}
             
             {loading 
-              ? <ActivityIndicator size="large" color="#38BDF8" />
+              ? <ActivityIndicator size="large" color = {MAIN_LIGHT_BLUE} />
               : <TouchableOpacity
                   style={styles.touchable}
                   onPress={handleRegister}>
@@ -125,7 +126,7 @@ export default function registerScreen(){
 
             <TouchableOpacity
                 onPress={() => {router.replace('/')}}>
-                <Ionicons name={"home"} size={15} color={'#38BDF8'}/>
+                <Ionicons name={"home"} size={15} color={MAIN_LIGHT_BLUE}/>
             </TouchableOpacity>
 
         </View>
@@ -134,7 +135,7 @@ export default function registerScreen(){
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: MAIN_WHITE,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -153,7 +154,7 @@ const styles = StyleSheet.create({
   touchable: {
     width: '30%',
     alignItems: 'center',
-    backgroundColor: '#38BDF8',
+    backgroundColor: MAIN_LIGHT_BLUE,
     borderRadius: 8,
     padding: 10,
     marginBottom: 10,
@@ -186,6 +187,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   buttonCreateAccount: {
-    color: '#38BDF8'
+    color: MAIN_LIGHT_BLUE
   }
 });
