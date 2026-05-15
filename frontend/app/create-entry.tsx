@@ -4,7 +4,7 @@ import { useState } from "react";
 import { API_URL } from "@/constants/api";
 import axios from "axios";
 import * as SecureStore from 'expo-secure-store';
-import {router} from 'expo-router'
+import { router } from 'expo-router'
 
 export default function CreateEntryScreen() {
 
@@ -54,91 +54,124 @@ export default function CreateEntryScreen() {
   }
 
   return (
+    <View style={styles.transparentContainer}>
 
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-    >
-      <ScrollView contentContainerStyle={{ alignItems: 'center', padding: 20, backgroundColor: MAIN_WHITE, flexGrow: 1, justifyContent: 'center' }}>
-        <Text style={styles.title}>Create New Password</Text>
+      <View style={styles.card}>
 
-        <Text style={styles.label}>
-          Service Name <Text style={styles.required}>*</Text>
-        </Text>
-        <TextInput
-          style={[styles.input, submitted && !serviceName && styles.inputError]}
-          value={serviceName}
-          onChangeText={setServiceName}
-          placeholder="Service Name"
-        />
+        <KeyboardAvoidingView
+          style={styles.container}
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        >
+          <ScrollView contentContainerStyle={styles.scrollView}>
+            <Text style={styles.title}>Create New Password</Text>
 
-        <TextInput
-          style={styles.input}
-          value={label}
-          onChangeText={setLabel}
-          placeholder="Label (ex: school)"
-        />
+            <Text style={styles.label}>
+              Service Name <Text style={styles.required}>*</Text>
+            </Text>
+            <TextInput
+              style={[styles.input, submitted && !serviceName && styles.inputError]}
+              value={serviceName}
+              onChangeText={setServiceName}
+              placeholder="Service Name"
+            />
 
-        <Text style={styles.label}>
-          Username <Text style={styles.required}>*</Text>
-        </Text>
-        <TextInput
-          style={[styles.input, submitted && !serviceName && styles.inputError]}
-          value={email}
-          onChangeText={setEmail}
-          placeholder="Email/Username"
-        />
+            <TextInput
+              style={styles.input}
+              value={label}
+              onChangeText={setLabel}
+              placeholder="Label (ex: school)"
+            />
 
-        <Text style={styles.label}>
-          Password <Text style={styles.required}>*</Text>
-        </Text>
-        <TextInput
-          style={[styles.input, submitted && !serviceName && styles.inputError]}
-          value={password}
-          onChangeText={setPassword}
-          placeholder="Password"
-        />
+            <Text style={styles.label}>
+              Username <Text style={styles.required}>*</Text>
+            </Text>
+            <TextInput
+              style={[styles.input, submitted && !serviceName && styles.inputError]}
+              value={email}
+              onChangeText={setEmail}
+              placeholder="Email/Username"
+            />
 
-        <TextInput
-          style={styles.input}
-          value={url}
-          onChangeText={setUrl}
-          placeholder="Url"
-        />
+            <Text style={styles.label}>
+              Password <Text style={styles.required}>*</Text>
+            </Text>
+            <TextInput
+              style={[styles.input, submitted && !serviceName && styles.inputError]}
+              value={password}
+              onChangeText={setPassword}
+              placeholder="Password"
+            />
 
-        <TextInput
-          style={styles.input}
-          value={notes}
-          onChangeText={setNotes}
-          placeholder="Notes"
-        />
+            <TextInput
+              style={styles.input}
+              value={url}
+              onChangeText={setUrl}
+              placeholder="Url"
+            />
 
-        {error ? <Text
-          style={styles.error}>{error}</Text> : null}
+            <TextInput
+              style={styles.input}
+              value={notes}
+              onChangeText={setNotes}
+              placeholder="Notes"
+            />
 
-        {loading
-          ? <ActivityIndicator size={"large"} color={MAIN_LIGHT_BLUE} />
-          : <TouchableOpacity
-            style={styles.touchable}
-            onPress={handleEntryRegister}>
-            <Text style={styles.text}>Save</Text>
-          </TouchableOpacity>
-        }
-      </ScrollView>
-    </KeyboardAvoidingView>
+            {error ? <Text
+              style={styles.error}>{error}</Text> : null}
+
+            {loading
+              ? <ActivityIndicator size={"large"} color={MAIN_LIGHT_BLUE} />
+              : <TouchableOpacity
+                style={styles.touchable}
+                onPress={handleEntryRegister}>
+                <Text style={styles.text}>Save</Text>
+              </TouchableOpacity>
+            }
+          </ScrollView>
+
+        </KeyboardAvoidingView>
+      </View>
+    </View>
   )
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    borderRadius: 15,
+    elevation: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.5,
+    shadowRadius: 8
+  },
+  transparentContainer: {
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flex: 1
+  },
+  card:{
+    height: '85%',
+    width: '88%',
+    borderRadius: 15,
+    padding: 10,
+    overflow: 'hidden'
+  },
+  scrollView: {
+    alignItems: 'center', 
+    padding: 10,
+    flexGrow: 1,
+    justifyContent: 'center',
     backgroundColor: MAIN_WHITE,
+    borderRadius: 15,
   },
   title: {
     color: MAIN_LIGHT_BLUE,
     fontSize: 25,
     fontWeight: 'bold',
-    marginBottom: 25
+    marginBottom: 25,
+    textAlign: 'center'
   },
   input: {
     width: '80%',
