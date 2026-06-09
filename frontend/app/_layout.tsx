@@ -62,6 +62,13 @@ function RootLayoutNav() {
             animation: 'fade'
           }
         } />
+        <Stack.Screen name="entry-detail" options={
+          {
+            presentation: 'transparentModal',
+            headerShown: false,
+            animation: 'slide_from_bottom'
+          }
+        } />
       </Stack>
     </ThemeProvider>
   );
