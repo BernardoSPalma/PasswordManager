@@ -28,12 +28,7 @@ export default function EntriesScreen() {
   const [list, setList] = useState<Entry[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  //Estados para o details das entries
-  const [modalVisible, setModalVisible] = useState(false);
-  const [selectedEntry, setSelectedEntry] = useState();
-  const [showPassword, setShowPassword] = useState(false);
-  const [loadingDetail, setLoadingDetail] = useState(false);
-
+  
   async function fetchEntries() {
     const token = await SecureStore.getItemAsync('token');
 
@@ -51,27 +46,6 @@ export default function EntriesScreen() {
     }
     finally {
       setLoading(false)
-    }
-  }
-
-  async function fetchEntryDetail(id: number){
-    setLoadingDetail(true)
-    const token = await SecureStore.getItemAsync('token')
-    const masterPassword = await SecureStore.getItemAsync('masterPassword')
-    try{
-      const response = await axios.get(`${API_URL}/api/entries/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'X-Master-Password': masterPassword
-        }
-      });
-      setSelectedEntry(response.data)
-      setModalVisible(true)
-    } catch (error) {
-      setError('Error trying to get the details')
-    }
-    finally{
-      setLoadingDetail(false)
     }
   }
 
@@ -105,7 +79,7 @@ export default function EntriesScreen() {
         data={list}
         keyExtractor={(entry) => entry.id.toString()}
         renderItem={({ item }) => (
-          <TouchableOpacity onPress={() => fetchEntryDetail(item.id)}>
+          <TouchableOpacity onPress={() => router.push(`/entry-detail?id=${item.id}`)}>
             <View style={styles.entryContainer}>
               <Text style={styles.text}>{item.name} </Text>
             </View>
