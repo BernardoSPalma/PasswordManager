@@ -25,6 +25,10 @@ export default function registerScreen(){
         setError('Invalid email format')
         return false;
       }
+      if(password.length < 8){
+        setError("Password must have at least 8 characters")
+        return false;
+      }
       if(!/[A-Z]/.test(password)){
         setError('Password must have at least one uppercase letter')
         return false;
@@ -34,7 +38,7 @@ export default function registerScreen(){
         return false;
       }
       if(!/[0-9]/.test(password)){
-        setError('Passwrd must have at least one number')
+        setError('Password must have at least one number')
         return false;
       }
       return true;
