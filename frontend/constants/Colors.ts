@@ -1,5 +1,6 @@
 export const MAIN_LIGHT_BLUE = '#38BDF8';
 export const MAIN_WHITE = '#fff';
+export const MAIN_DARK_BLUE = '#195A85'
 const tintColorLight = '#2f95dc';
 const tintColorDark = '#fff';
 
