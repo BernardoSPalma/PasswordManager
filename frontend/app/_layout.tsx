@@ -1,3 +1,4 @@
+import { useColorScheme } from '@/components/useColorScheme';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
@@ -6,11 +7,9 @@ import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
 
-import { useColorScheme } from '@/components/useColorScheme';
-
 export {
   // Catch any errors thrown by the Layout component.
-  ErrorBoundary,
+  ErrorBoundary
 } from 'expo-router';
 
 export const unstable_settings = {
@@ -66,7 +65,7 @@ function RootLayoutNav() {
           {
             presentation: 'transparentModal',
             headerShown: false,
-            animation: 'slide_from_bottom'
+            animation: 'fade'
           }
         } />
       </Stack>

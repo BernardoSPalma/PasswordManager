@@ -1,10 +1,12 @@
-import { View, StyleSheet, Text, TextInput, ActivityIndicator, TouchableOpacity, KeyboardAvoidingView, ScrollView, Platform } from "react-native";
-import { MAIN_LIGHT_BLUE, MAIN_WHITE } from '@/constants/Colors';
-import { useState } from "react";
 import { API_URL } from "@/constants/api";
+import { MAIN_LIGHT_BLUE, MAIN_WHITE } from '@/constants/Colors';
 import axios from "axios";
+import { BlurView } from "expo-blur";
+import { router } from 'expo-router';
 import * as SecureStore from 'expo-secure-store';
-import { router } from 'expo-router'
+import { useState } from "react";
+import { ActivityIndicator, Keyboard, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import Animated, { SlideOutDown, ZoomIn } from 'react-native-reanimated';
 
 export default function CreateEntryScreen() {
 
@@ -17,6 +19,7 @@ export default function CreateEntryScreen() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [submitted, setSubmitted] = useState(false)
+  const [isVisible, setIsVisible] = useState(true)
 
   async function handleEntryRegister() {
     setSubmitted(true)
@@ -53,84 +56,110 @@ export default function CreateEntryScreen() {
     }
   }
 
+  function handleDismiss() {
+    Keyboard.dismiss()
+    setIsVisible(false);
+    setTimeout(() => {
+      router.back();
+    }, 350)
+  }
+
   return (
     <View style={styles.transparentContainer}>
 
-      <View style={styles.card}>
+      <BlurView
+        intensity={30}
+        tint="dark"
+        style={StyleSheet.absoluteFill}
+        experimentalBlurMethod="dimezisBlurView"
+      />
 
-        <KeyboardAvoidingView
-          style={styles.container}
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        >
-          <ScrollView contentContainerStyle={styles.scrollView}>
-            <Text style={styles.title}>Create New Password</Text>
+      <TouchableOpacity
+        style={StyleSheet.absoluteFillObject}
+        onPress={handleDismiss}
+        activeOpacity={1}
+      />
 
-            <Text style={styles.label}>
-              Service Name <Text style={styles.required}>*</Text>
-            </Text>
-            <TextInput
-              style={[styles.input, submitted && !serviceName && styles.inputError]}
-              value={serviceName}
-              onChangeText={setServiceName}
-              placeholder="Service Name"
-            />
+      {isVisible && (
+        <Animated.View
+          entering={ZoomIn.springify().damping(85)}
+          exiting={SlideOutDown.springify().damping(85)}
+          style={styles.card}>
 
-            <TextInput
-              style={styles.input}
-              value={label}
-              onChangeText={setLabel}
-              placeholder="Label (ex: school)"
-            />
+          <KeyboardAvoidingView
+            style={styles.container}
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          >
+            <ScrollView contentContainerStyle={styles.scrollView}>
+              <Text style={styles.title}>Create New Password</Text>
 
-            <Text style={styles.label}>
-              Username <Text style={styles.required}>*</Text>
-            </Text>
-            <TextInput
-              style={[styles.input, submitted && !serviceName && styles.inputError]}
-              value={email}
-              onChangeText={setEmail}
-              placeholder="Email/Username"
-            />
+              <Text style={styles.label}>
+                Service Name <Text style={styles.required}>*</Text>
+              </Text>
+              <TextInput
+                style={[styles.input, submitted && !serviceName && styles.inputError]}
+                value={serviceName}
+                onChangeText={setServiceName}
+                placeholder="Service Name"
+              />
 
-            <Text style={styles.label}>
-              Password <Text style={styles.required}>*</Text>
-            </Text>
-            <TextInput
-              style={[styles.input, submitted && !serviceName && styles.inputError]}
-              value={password}
-              onChangeText={setPassword}
-              placeholder="Password"
-            />
+              <TextInput
+                style={styles.input}
+                value={label}
+                onChangeText={setLabel}
+                placeholder="Label (ex: school)"
+              />
 
-            <TextInput
-              style={styles.input}
-              value={url}
-              onChangeText={setUrl}
-              placeholder="Url"
-            />
+              <Text style={styles.label}>
+                Username <Text style={styles.required}>*</Text>
+              </Text>
+              <TextInput
+                style={[styles.input, submitted && !serviceName && styles.inputError]}
+                value={email}
+                onChangeText={setEmail}
+                placeholder="Email/Username"
+              />
 
-            <TextInput
-              style={styles.input}
-              value={notes}
-              onChangeText={setNotes}
-              placeholder="Notes"
-            />
+              <Text style={styles.label}>
+                Password <Text style={styles.required}>*</Text>
+              </Text>
+              <TextInput
+                style={[styles.input, submitted && !serviceName && styles.inputError]}
+                value={password}
+                onChangeText={setPassword}
+                placeholder="Password"
+              />
 
-            {error ? <Text
-              style={styles.error}>{error}</Text> : null}
+              <TextInput
+                style={styles.input}
+                value={url}
+                onChangeText={setUrl}
+                placeholder="Url"
+              />
 
-            {loading
-              ? <ActivityIndicator size={"large"} color={MAIN_LIGHT_BLUE} />
-              : <TouchableOpacity
-                style={styles.touchable}
-                onPress={handleEntryRegister}>
-                <Text style={styles.text}>Save</Text>
-              </TouchableOpacity>
-            }
-          </ScrollView>
+              <TextInput
+                style={styles.input}
+                value={notes}
+                onChangeText={setNotes}
+                placeholder="Notes"
+              />
 
-        </KeyboardAvoidingView>
-      </View>
+              {error ? <Text
+                style={styles.error}>{error}</Text> : null}
+
+              {loading
+                ? <ActivityIndicator size={"large"} color={MAIN_LIGHT_BLUE} />
+                : <TouchableOpacity
+                  style={styles.touchable}
+                  onPress={handleEntryRegister}>
+                  <Text style={styles.text}>Save</Text>
+                </TouchableOpacity>
+              }
+            </ScrollView>
+
+          </KeyboardAvoidingView>
+        </Animated.View>
+      )}
     </View>
   )
 }
@@ -142,24 +171,24 @@ const styles = StyleSheet.create({
     elevation: 4,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.5,
-    shadowRadius: 8
+    shadowOpacity: 0.15,
+    shadowRadius: 12
   },
   transparentContainer: {
-    backgroundColor: 'rgba(0,0,0,0.5)',
     alignItems: 'center',
     justifyContent: 'center',
     flex: 1
   },
-  card:{
-    height: '85%',
+  card: {
+    backgroundColor: MAIN_WHITE,
+    height: '75%',
     width: '88%',
     borderRadius: 15,
-    padding: 10,
-    overflow: 'hidden'
+    overflow: 'hidden',
+    
   },
   scrollView: {
-    alignItems: 'center', 
+    alignItems: 'center',
     padding: 10,
     flexGrow: 1,
     justifyContent: 'center',

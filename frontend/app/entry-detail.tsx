@@ -1,10 +1,12 @@
-import { View, StyleSheet, Text, TextInput, ActivityIndicator, TouchableOpacity, KeyboardAvoidingView, ScrollView, Platform } from "react-native";
 import { MAIN_DARK_BLUE, MAIN_LIGHT_BLUE, MAIN_WHITE } from '@/constants/Colors';
 import { API_URL } from "@/constants/api";
 import axios from "axios";
+import { BlurView } from 'expo-blur';
+import { router, useLocalSearchParams } from 'expo-router';
 import * as SecureStore from 'expo-secure-store';
-import { router, useLocalSearchParams } from 'expo-router'
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import { ActivityIndicator, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import Animated, { SlideInDown, SlideOutDown } from 'react-native-reanimated';
 
 type EntryDetail = {
     id: number,
@@ -21,6 +23,7 @@ export default function CreateDetailsScreen() {
     const [loadingDetail, setLoadingDetail] = useState(false);
     const [error, setError] = useState('');
     const { id } = useLocalSearchParams();
+    const [isVisible, setIsVisible] = useState(true);
 
     useEffect(() => {
         if (id) {
@@ -48,55 +51,75 @@ export default function CreateDetailsScreen() {
         }
     }
 
+    function handleDismiss() {
+        setIsVisible(false);
+        setTimeout(() => {
+            router.dismiss();
+        }, 300)
+    }
+
     return (
         <View style={styles.transparentContainer}>
 
+            <BlurView
+                intensity={30}
+                tint="dark"
+                style={StyleSheet.absoluteFill}
+                experimentalBlurMethod="dimezisBlurView"
+            />
+
             <TouchableOpacity
-                style={{ flex: 1, alignSelf: 'stretch' }}
-                onPress={() => router.dismiss()}
+                style={StyleSheet.absoluteFill}
+                onPress={handleDismiss}
                 activeOpacity={1}
             />
 
-            <View style={styles.card}>
-                <KeyboardAvoidingView
-                    style={styles.container}
-                    behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-                >
-                    {loadingDetail ? (
-                        <ScrollView contentContainerStyle={styles.scrollViewIndicator}>
-                            <ActivityIndicator size="large" color={MAIN_LIGHT_BLUE}/>
-                        </ScrollView>
-                    ) : (
-                        <ScrollView contentContainerStyle={styles.scrollView}>
-                            <Text style={styles.title}>Details</Text>
-                            <Text style={styles.smallerTitle}>{selectedEntry?.name}</Text>
+            {isVisible && (
+                <Animated.View
+                    entering={SlideInDown.springify().damping(85)}
+                    exiting={SlideOutDown.springify().damping(85)}
+                    style={styles.card}>
+                    <KeyboardAvoidingView
+                        style={styles.container}
+                        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                    >
+                        {loadingDetail ? (
+                            <ScrollView contentContainerStyle={styles.scrollViewIndicator}>
+                                <ActivityIndicator size="large" color={MAIN_LIGHT_BLUE} />
+                            </ScrollView>
+                        ) : (
+                            <ScrollView contentContainerStyle={styles.scrollView}>
+                                <Text style={styles.title}>Details</Text>
+                                <Text style={styles.smallerTitle}>{selectedEntry?.name}</Text>
 
-                            <Text style={styles.detailName}>Username</Text>
-                            <Text style={styles.text}>{selectedEntry?.username}</Text>
+                                <Text style={styles.detailName}>Username</Text>
+                                <Text style={styles.text}>{selectedEntry?.username}</Text>
 
-                            <Text style={styles.detailName}>Password</Text>
-                            <Text style={styles.text}>{selectedEntry?.password}</Text>
+                                <Text style={styles.detailName}>Password</Text>
+                                <Text style={styles.text}>{selectedEntry?.password}</Text>
 
-                            {selectedEntry?.url && (
-                                <View>
-                                    <Text style={styles.detailName}>URL</Text>
-                                    <Text style={styles.text}>{selectedEntry?.url}</Text>
-                                </View>
-                            )}
+                                {selectedEntry?.url && (
+                                    <View>
+                                        <Text style={styles.detailName}>URL</Text>
+                                        <Text style={styles.text}>{selectedEntry?.url}</Text>
+                                    </View>
+                                )}
 
-                            {selectedEntry?.notes && (
-                                <View>
-                                    <Text style={styles.detailName}>Notes</Text>
-                                    <Text style={styles.text}>{selectedEntry?.notes}</Text>
-                                </View>
-                            )}
+                                {selectedEntry?.notes && (
+                                    <View>
+                                        <Text style={styles.detailName}>Notes</Text>
+                                        <Text style={styles.text}>{selectedEntry?.notes}</Text>
+                                    </View>
+                                )}
 
-                        </ScrollView>
-                    )}
+                            </ScrollView>
+                        )}
 
 
-                </KeyboardAvoidingView>
-            </View>
+                    </KeyboardAvoidingView>
+                </Animated.View>
+
+            )}
         </View>
     )
 }
@@ -105,7 +128,7 @@ const styles = StyleSheet.create({
     transparentContainer: {
         justifyContent: 'flex-end',
         flex: 1,
-        alignItems: 'center'
+        alignItems: 'center',
     },
     card: {
         height: '60%',
@@ -167,5 +190,5 @@ const styles = StyleSheet.create({
         color: MAIN_LIGHT_BLUE,
         fontSize: 16
     },
-    
+
 })

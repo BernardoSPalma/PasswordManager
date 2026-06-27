@@ -1,11 +1,11 @@
 import { API_URL } from '@/constants/api';
-import axios from 'axios';
-import { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, ActivityIndicator } from 'react-native';
-import { router } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
-import * as SecureStore from 'expo-secure-store';
 import { MAIN_LIGHT_BLUE, MAIN_WHITE } from '@/constants/Colors';
+import { Ionicons } from '@expo/vector-icons';
+import axios from 'axios';
+import { router } from 'expo-router';
+import * as SecureStore from 'expo-secure-store';
+import { useState } from 'react';
+import { ActivityIndicator, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 export default function loginScreen() {
 
@@ -43,7 +43,7 @@ export default function loginScreen() {
         }
         else {
           setError('Error loading account')
-        }
+        } 
       }
       else {
         setError('Unexpected error, try again later')
