@@ -24,6 +24,14 @@ export default function CreateDetailsScreen() {
     const [error, setError] = useState('');
     const { id } = useLocalSearchParams();
     const [isVisible, setIsVisible] = useState(true);
+    //editing mode
+    const [isEditing, setIsEditing] = useState(false);
+    const [serviceName, setServiceName] = useState('')
+    const [label, setLabel] = useState('')
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+    const [url, setUrl] = useState('')
+    const [notes, setNotes] = useState('')
 
     useEffect(() => {
         if (id) {
@@ -56,6 +64,13 @@ export default function CreateDetailsScreen() {
         setTimeout(() => {
             router.dismiss();
         }, 300)
+    }
+
+    //TODO: Nao é necessario alterar o nome, deixar nome como está. Editar apenas outro campos
+    function startEditing(){
+        if(selectedEntry){
+            
+        }
     }
 
     return (
@@ -111,6 +126,10 @@ export default function CreateDetailsScreen() {
                                         <Text style={styles.text}>{selectedEntry?.notes}</Text>
                                     </View>
                                 )}
+
+                                <TouchableOpacity style={styles.editButton}>
+                                    <Text style={styles.buttonText}>Edit Entry</Text>
+                                </TouchableOpacity>
 
                             </ScrollView>
                         )}
@@ -190,5 +209,24 @@ const styles = StyleSheet.create({
         color: MAIN_LIGHT_BLUE,
         fontSize: 16
     },
-
+    editButton: {
+        alignSelf: 'center',
+        width: '40%',
+        marginTop: 25,
+        backgroundColor: MAIN_WHITE,
+        borderWidth: 2,
+        borderColor: MAIN_LIGHT_BLUE,
+        padding: 10,
+        alignItems: 'center',
+        borderRadius: 8,
+        elevation: 4,
+        shadowColor: MAIN_LIGHT_BLUE,
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.2,
+        shadowRadius: 6
+    },
+    buttonText: {
+        color: MAIN_LIGHT_BLUE,
+        fontWeight: 'bold'
+    }
 })
