@@ -53,7 +53,7 @@ public class EntriesController {
     @PutMapping("/{id}")
     public ResponseEntity<Void> updateEntry(@PathVariable Long id, @RequestBody UpdateEntryRequest updateEntryRequest) throws Exception{
         User user = getAuthenticatedUser();
-        this.passwordEntryService.updateEntry(user, updateEntryRequest.getUsername(),updateEntryRequest.getPassword(),updateEntryRequest.getNotes(),id,AesKeyHolder.get());
+        this.passwordEntryService.updateEntry(user, updateEntryRequest.getUsername(),updateEntryRequest.getPassword(), updateEntryRequest.getUrl(), updateEntryRequest.getNotes(),id,AesKeyHolder.get());
         return ResponseEntity.noContent().build();
     }
 

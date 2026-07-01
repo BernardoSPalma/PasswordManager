@@ -46,7 +46,7 @@ public class PasswordEntryService {
         return new PasswordEntryDTO(dataToDecrypt.getId(), dataToDecrypt.getName(), username, password, dataToDecrypt.getUrl(), notes, dataToDecrypt.getCreatedAt(), dataToDecrypt.getUpdatedAt());
     }
 
-    public void updateEntry(User user, String newUsername, String newPassword, String newNotes, long entryId, SecretKey key) throws Exception{
+    public void updateEntry(User user, String newUsername, String newPassword,String newUrl, String newNotes, long entryId, SecretKey key) throws Exception{
         PasswordEntry dataToUpdate = passwordEntryRepository.findById(entryId).orElseThrow(() -> new IllegalArgumentException("Entry not found"));
         checkEntryBelongToUser(user, dataToUpdate);
         byte[] encryptedUsername = newUsername != null
@@ -60,6 +60,14 @@ public class PasswordEntryService {
         }
         if(encryptedPassword != null){
             dataToUpdate.setPasswordEncrypted(encryptedPassword);
+        }
+        if(newUrl != null){
+            if(newUrl.isEmpty()){
+                dataToUpdate.setUrl(null);
+            }
+            else{
+                dataToUpdate.setUrl(newUrl);
+            }
         }
         if(newNotes != null){
             if(newNotes.isEmpty()){
