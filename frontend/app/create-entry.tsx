@@ -12,7 +12,7 @@ export default function CreateEntryScreen() {
 
   const [serviceName, setServiceName] = useState('')
   const [label, setLabel] = useState('')
-  const [email, setEmail] = useState('')
+  const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [url, setUrl] = useState('')
   const [notes, setNotes] = useState('')
@@ -23,7 +23,7 @@ export default function CreateEntryScreen() {
 
   async function handleEntryRegister() {
     setSubmitted(true)
-    if (!serviceName || !email || !password) {
+    if (!serviceName || !username || !password) {
       setError('Please fill all the required fields')
       return;
     }
@@ -35,7 +35,7 @@ export default function CreateEntryScreen() {
       setLoading(true);
       const name = label ? `${serviceName} (${label})` : serviceName;
       await axios.post(`${API_URL}/api/entries`, {
-        username: email,
+        username: username,
         password: password,
         url: url,
         notes: notes,
@@ -50,6 +50,7 @@ export default function CreateEntryScreen() {
     }
     catch {
       setError('An error ocurred while trying to create a new password entry')
+      setSubmitted(false)
     }
     finally {
       setLoading(false);
@@ -114,9 +115,9 @@ export default function CreateEntryScreen() {
                 Username <Text style={styles.required}>*</Text>
               </Text>
               <TextInput
-                style={[styles.input, submitted && !serviceName && styles.inputError]}
-                value={email}
-                onChangeText={setEmail}
+                style={[styles.input, submitted && !username && styles.inputError]}
+                value={username}
+                onChangeText={setUsername}
                 placeholder="Email/Username"
               />
 
@@ -124,7 +125,7 @@ export default function CreateEntryScreen() {
                 Password <Text style={styles.required}>*</Text>
               </Text>
               <TextInput
-                style={[styles.input, submitted && !serviceName && styles.inputError]}
+                style={[styles.input, submitted && !password && styles.inputError]}
                 value={password}
                 onChangeText={setPassword}
                 placeholder="Password"

@@ -1,11 +1,11 @@
-import { MAIN_DARK_BLUE, MAIN_LIGHT_BLUE, MAIN_WHITE } from '@/constants/Colors';
+import { MAIN_CANCEL_RED, MAIN_DARK_BLUE, MAIN_LIGHT_BLUE, MAIN_SAVE_GREEN, MAIN_WHITE } from '@/constants/Colors';
 import { API_URL } from "@/constants/api";
 import axios from "axios";
 import { BlurView } from 'expo-blur';
 import { router, useLocalSearchParams } from 'expo-router';
 import * as SecureStore from 'expo-secure-store';
 import { useEffect, useState } from "react";
-import { ActivityIndicator, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import Animated, { SlideInDown, SlideOutDown } from 'react-native-reanimated';
 
 type EntryDetail = {
@@ -19,19 +19,17 @@ type EntryDetail = {
 
 export default function CreateDetailsScreen() {
     const [selectedEntry, setSelectedEntry] = useState<EntryDetail | null>(null);
-    const [showPassword, setShowPassword] = useState(false);
-    const [loadingDetail, setLoadingDetail] = useState(false);
+    const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const { id } = useLocalSearchParams();
     const [isVisible, setIsVisible] = useState(true);
     //editing mode
     const [isEditing, setIsEditing] = useState(false);
-    const [serviceName, setServiceName] = useState('')
-    const [label, setLabel] = useState('')
-    const [email, setEmail] = useState('')
+    const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
     const [url, setUrl] = useState('')
     const [notes, setNotes] = useState('')
+    const [submitted, setSubmitted] = useState(false)
 
     useEffect(() => {
         if (id) {
@@ -40,7 +38,7 @@ export default function CreateDetailsScreen() {
     }, [id]);
 
     async function fetchEntryDetail(id: number) {
-        setLoadingDetail(true)
+        setLoading(true)
         const token = await SecureStore.getItemAsync('token')
         const masterPassword = await SecureStore.getItemAsync('masterPassword')
         try {
@@ -55,7 +53,7 @@ export default function CreateDetailsScreen() {
             setError('Error trying to get the details')
         }
         finally {
-            setLoadingDetail(false)
+            setLoading(false)
         }
     }
 
@@ -66,11 +64,56 @@ export default function CreateDetailsScreen() {
         }, 300)
     }
 
-    //TODO: Nao é necessario alterar o nome, deixar nome como está. Editar apenas outro campos
-    function startEditing(){
-        if(selectedEntry){
-            
+    function startEditing() {
+        if (selectedEntry) {
+            setUsername(selectedEntry.username)
+            setPassword(selectedEntry.password)
+            setUrl(selectedEntry.url || '')
+            setNotes(selectedEntry.notes || '')
+            setIsEditing(true)
         }
+    }
+
+    async function editEntry() {
+        setSubmitted(true)
+        if (!username || !password) {
+            setError('Please fill all the required fields')
+            return;
+        }
+        setError('')
+        setLoading(true)
+        const token = await SecureStore.getItemAsync('token')
+        const masterPassword = await SecureStore.getItemAsync('masterPassword')
+
+        try {
+            await axios.put(`${API_URL}/api/entries/${id}`, {
+                username: username,
+                password: password,
+                url: url,
+                notes: notes
+            }, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'X-Master-Password': masterPassword
+                }
+            });
+            fetchEntryDetail(Number(id))
+        }
+        catch {
+            setError('An error ocurred while trying to update password entry')
+            setSubmitted(false)
+        }
+        finally {
+            setIsEditing(false)
+            setLoading(false)
+            setError('')
+        }
+    }
+
+    function cancelEdit(){
+        setError('')
+        setSubmitted(false)
+        setIsEditing(false)
     }
 
     return (
@@ -98,10 +141,67 @@ export default function CreateDetailsScreen() {
                         style={styles.container}
                         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
                     >
-                        {loadingDetail ? (
+                        {loading ? (
                             <ScrollView contentContainerStyle={styles.scrollViewIndicator}>
                                 <ActivityIndicator size="large" color={MAIN_LIGHT_BLUE} />
                             </ScrollView>
+                        ) : isEditing ? (
+                            <ScrollView contentContainerStyle={styles.scrollView}>
+                                <Text style={styles.title}>Details</Text>
+                                <Text style={styles.smallerTitle}>{selectedEntry?.name}</Text>
+
+
+                                <Text style={[styles.detailName]}>Username <Text style={styles.required}>*</Text></Text>
+                                <TextInput
+                                    style={[styles.input, submitted && !username && styles.inputError]}
+                                    value={username}
+                                    onChangeText={setUsername}
+                                    placeholder="Email/Username" />
+
+
+                                <Text style={styles.detailName}>Password <Text style={styles.required}>*</Text></Text>
+                                <TextInput
+                                    style={[styles.input, submitted && !password && styles.inputError]}
+                                    value={password}
+                                    onChangeText={setPassword}
+                                    placeholder="Password" />
+
+
+                                <Text style={styles.detailName}>URL</Text>
+                                <TextInput
+                                    style={styles.input}
+                                    value={url}
+                                    onChangeText={setUrl}
+                                    placeholder="Url" />
+
+
+                                <Text style={styles.detailName}>Notes</Text>
+                                <TextInput
+                                    style={styles.input}
+                                    value={notes}
+                                    onChangeText={setNotes}
+                                    placeholder="Notes" />
+
+                                {error ? <Text
+                                    style={styles.error}>{error}
+                                </Text> : null}
+
+                                <View style={styles.buttonsView}>
+                                    <TouchableOpacity
+                                        style={styles.buttonSave}
+                                        onPress={editEntry}>
+                                        <Text style={styles.buttonSaveText}>Save</Text>
+                                    </TouchableOpacity>
+
+                                    <TouchableOpacity
+                                        style={styles.buttonCancel}
+                                        onPress={cancelEdit}>
+                                        <Text style={styles.buttonCancelText}>Cancel</Text>
+                                    </TouchableOpacity>
+                                </View>
+
+                            </ScrollView>
+
                         ) : (
                             <ScrollView contentContainerStyle={styles.scrollView}>
                                 <Text style={styles.title}>Details</Text>
@@ -128,12 +228,16 @@ export default function CreateDetailsScreen() {
                                 )}
 
                                 <TouchableOpacity style={styles.editButton}>
-                                    <Text style={styles.buttonText}>Edit Entry</Text>
+                                    <Text
+                                        style={styles.buttonText}
+                                        onPress={startEditing}>
+                                        Edit Entry</Text>
                                 </TouchableOpacity>
+
+                                <Text style={styles.deleteText}>Delete Entry</Text>
 
                             </ScrollView>
                         )}
-
 
                     </KeyboardAvoidingView>
                 </Animated.View>
@@ -225,8 +329,83 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.2,
         shadowRadius: 6
     },
+    buttonSave: {
+        alignSelf: 'center',
+        width: '40%',
+        marginTop: 10,
+        marginBottom: 25,
+        marginHorizontal: 7,
+        backgroundColor: MAIN_WHITE,
+        borderWidth: 2,
+        borderColor: MAIN_SAVE_GREEN,
+        padding: 10,
+        alignItems: 'center',
+        borderRadius: 8,
+        elevation: 4,
+        shadowColor: MAIN_SAVE_GREEN,
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.2,
+        shadowRadius: 6
+    },
+    buttonCancel: {
+        alignSelf: 'center',
+        width: '40%',
+        marginTop: 10,
+        marginBottom: 25,
+        marginHorizontal: 7,
+        backgroundColor: MAIN_WHITE,
+        borderWidth: 2,
+        borderColor: MAIN_CANCEL_RED,
+        padding: 10,
+        alignItems: 'center',
+        borderRadius: 8,
+        elevation: 4,
+        shadowColor: MAIN_CANCEL_RED,
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.2,
+        shadowRadius: 6
+    },
     buttonText: {
         color: MAIN_LIGHT_BLUE,
         fontWeight: 'bold'
-    }
+    },
+    buttonSaveText: {
+        color: MAIN_SAVE_GREEN,
+        fontWeight: 'bold'
+    },
+    buttonCancelText: {
+        color: MAIN_CANCEL_RED,
+        fontWeight: 'bold'
+    },
+    input: {
+        width: '80%',
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 8,
+        padding: 10,
+        marginBottom: 15
+    },
+    buttonsView: {
+        flexDirection: 'row',
+        justifyContent: 'center'
+    },
+    deleteText: {
+        color: MAIN_CANCEL_RED,
+        fontWeight: 'bold',
+        alignSelf: 'center',
+        marginTop: 25,
+        textDecorationLine: 'underline'
+    },
+    required: {
+        color: 'red',
+        fontWeight: 'normal'
+    },
+    error: {
+        color: 'red',
+        marginBottom: 10,
+        alignSelf: 'center'
+    },
+    inputError: {
+        borderColor: 'red',
+    },
 })
