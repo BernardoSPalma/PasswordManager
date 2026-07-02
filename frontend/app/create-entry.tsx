@@ -59,10 +59,16 @@ export default function CreateEntryScreen() {
 
   function handleDismiss() {
     Keyboard.dismiss()
-    setIsVisible(false);
     setTimeout(() => {
-      router.back();
-    }, 350)
+          if (router.canGoBack()) {
+            setIsVisible(false);
+            setTimeout(() => {
+              router.dismiss();
+            }, 350);
+          } else {
+            router.replace('/(tabs)/entries');
+          }
+        }, 100);
   }
 
   return (
@@ -91,7 +97,8 @@ export default function CreateEntryScreen() {
             style={styles.container}
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
           >
-            <ScrollView contentContainerStyle={styles.scrollView}>
+            <ScrollView contentContainerStyle={styles.scrollView}
+              showsVerticalScrollIndicator={false}>
               <Text style={styles.title}>Create New Password</Text>
 
               <Text style={styles.label}>

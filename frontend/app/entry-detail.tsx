@@ -30,6 +30,7 @@ export default function CreateDetailsScreen() {
     const [url, setUrl] = useState('')
     const [notes, setNotes] = useState('')
     const [submitted, setSubmitted] = useState(false)
+    const [entryDeleted, setEntryDeleted] = useState(false)
 
     useEffect(() => {
         if (id) {
@@ -74,7 +75,7 @@ export default function CreateDetailsScreen() {
         }
     }
 
-    async function editEntry() {
+    async function HandleEditEntry() {
         setSubmitted(true)
         if (!username || !password) {
             setError('Please fill all the required fields')
@@ -110,10 +111,39 @@ export default function CreateDetailsScreen() {
         }
     }
 
-    function cancelEdit(){
+    function cancelEdit() {
         setError('')
         setSubmitted(false)
         setIsEditing(false)
+    }
+
+    async function handleDeleteEntry() {
+        setError('')
+        setLoading(true)
+        const token = await SecureStore.getItemAsync('token')
+        const masterPassword = await SecureStore.getItemAsync('masterPassword')
+
+        try {
+            await axios.delete(`${API_URL}/api/entries/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'X-Master-Password': masterPassword
+                }
+            })
+            setEntryDeleted(true)
+            setLoading(false)
+            setTimeout(() => {
+                setIsVisible(false)
+                setTimeout(()=> {
+                    router.dismiss()
+                    setEntryDeleted(false)
+                }, 500)
+            }, 1000)
+        }
+        catch {
+            setError('An error ocurred while trying to delete password entry')
+            setLoading(false)
+        }
     }
 
     return (
@@ -141,103 +171,115 @@ export default function CreateDetailsScreen() {
                         style={styles.container}
                         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
                     >
-                        {loading ? (
+                        {entryDeleted ? (
                             <ScrollView contentContainerStyle={styles.scrollViewIndicator}>
-                                <ActivityIndicator size="large" color={MAIN_LIGHT_BLUE} />
+                                <Text style={styles.deletedEntryText}>Entry was deleted sucessfully</Text>
                             </ScrollView>
-                        ) : isEditing ? (
-                            <ScrollView contentContainerStyle={styles.scrollView}>
-                                <Text style={styles.title}>Details</Text>
-                                <Text style={styles.smallerTitle}>{selectedEntry?.name}</Text>
+                        )
+                            : loading ? (
+                                <ScrollView contentContainerStyle={styles.scrollViewIndicator}>
+                                    <ActivityIndicator size="large" color={MAIN_LIGHT_BLUE} />
+                                </ScrollView>
+                            ) : isEditing ? (
+                                <ScrollView contentContainerStyle={styles.scrollView}
+                                    showsVerticalScrollIndicator={false}>
+                                    <Text style={styles.title}>Details</Text>
+                                    <Text style={styles.smallerTitle}>{selectedEntry?.name}</Text>
 
 
-                                <Text style={[styles.detailName]}>Username <Text style={styles.required}>*</Text></Text>
-                                <TextInput
-                                    style={[styles.input, submitted && !username && styles.inputError]}
-                                    value={username}
-                                    onChangeText={setUsername}
-                                    placeholder="Email/Username" />
+                                    <Text style={[styles.detailName]}>Username <Text style={styles.required}>*</Text></Text>
+                                    <TextInput
+                                        style={[styles.input, submitted && !username && styles.inputError]}
+                                        value={username}
+                                        onChangeText={setUsername}
+                                        placeholder="Email/Username" />
 
 
-                                <Text style={styles.detailName}>Password <Text style={styles.required}>*</Text></Text>
-                                <TextInput
-                                    style={[styles.input, submitted && !password && styles.inputError]}
-                                    value={password}
-                                    onChangeText={setPassword}
-                                    placeholder="Password" />
+                                    <Text style={styles.detailName}>Password <Text style={styles.required}>*</Text></Text>
+                                    <TextInput
+                                        style={[styles.input, submitted && !password && styles.inputError]}
+                                        value={password}
+                                        onChangeText={setPassword}
+                                        placeholder="Password" />
 
 
-                                <Text style={styles.detailName}>URL</Text>
-                                <TextInput
-                                    style={styles.input}
-                                    value={url}
-                                    onChangeText={setUrl}
-                                    placeholder="Url" />
+                                    <Text style={styles.detailName}>URL</Text>
+                                    <TextInput
+                                        style={styles.input}
+                                        value={url}
+                                        onChangeText={setUrl}
+                                        placeholder="Url" />
 
 
-                                <Text style={styles.detailName}>Notes</Text>
-                                <TextInput
-                                    style={styles.input}
-                                    value={notes}
-                                    onChangeText={setNotes}
-                                    placeholder="Notes" />
+                                    <Text style={styles.detailName}>Notes</Text>
+                                    <TextInput
+                                        style={styles.input}
+                                        value={notes}
+                                        onChangeText={setNotes}
+                                        placeholder="Notes" />
 
-                                {error ? <Text
-                                    style={styles.error}>{error}
-                                </Text> : null}
+                                    {error ? <Text
+                                        style={styles.error}>{error}
+                                    </Text> : null}
 
-                                <View style={styles.buttonsView}>
-                                    <TouchableOpacity
-                                        style={styles.buttonSave}
-                                        onPress={editEntry}>
-                                        <Text style={styles.buttonSaveText}>Save</Text>
+                                    <View style={styles.buttonsView}>
+                                        <TouchableOpacity
+                                            style={styles.buttonSave}
+                                            onPress={HandleEditEntry}>
+                                            <Text style={styles.buttonSaveText}>Save</Text>
+                                        </TouchableOpacity>
+
+                                        <TouchableOpacity
+                                            style={styles.buttonCancel}
+                                            onPress={cancelEdit}>
+                                            <Text style={styles.buttonCancelText}>Cancel</Text>
+                                        </TouchableOpacity>
+                                    </View>
+
+                                </ScrollView>
+
+                            ) : (
+                                <ScrollView contentContainerStyle={styles.scrollView}>
+                                    <Text style={styles.title}>Details</Text>
+                                    <Text style={styles.smallerTitle}>{selectedEntry?.name}</Text>
+
+                                    <Text style={styles.detailName}>Username</Text>
+                                    <Text style={styles.text}>{selectedEntry?.username}</Text>
+
+                                    <Text style={styles.detailName}>Password</Text>
+                                    <Text style={styles.text}>{selectedEntry?.password}</Text>
+
+                                    {selectedEntry?.url && (
+                                        <View>
+                                            <Text style={styles.detailName}>URL</Text>
+                                            <Text style={styles.text}>{selectedEntry?.url}</Text>
+                                        </View>
+                                    )}
+
+                                    {selectedEntry?.notes && (
+                                        <View>
+                                            <Text style={styles.detailName}>Notes</Text>
+                                            <Text style={styles.text}>{selectedEntry?.notes}</Text>
+                                        </View>
+                                    )}
+
+                                    <TouchableOpacity style={styles.editButton}>
+                                        <Text
+                                            style={styles.buttonText}
+                                            onPress={startEditing}>
+                                            Edit Entry
+                                        </Text>
                                     </TouchableOpacity>
 
-                                    <TouchableOpacity
-                                        style={styles.buttonCancel}
-                                        onPress={cancelEdit}>
-                                        <Text style={styles.buttonCancelText}>Cancel</Text>
-                                    </TouchableOpacity>
-                                </View>
 
-                            </ScrollView>
-
-                        ) : (
-                            <ScrollView contentContainerStyle={styles.scrollView}>
-                                <Text style={styles.title}>Details</Text>
-                                <Text style={styles.smallerTitle}>{selectedEntry?.name}</Text>
-
-                                <Text style={styles.detailName}>Username</Text>
-                                <Text style={styles.text}>{selectedEntry?.username}</Text>
-
-                                <Text style={styles.detailName}>Password</Text>
-                                <Text style={styles.text}>{selectedEntry?.password}</Text>
-
-                                {selectedEntry?.url && (
-                                    <View>
-                                        <Text style={styles.detailName}>URL</Text>
-                                        <Text style={styles.text}>{selectedEntry?.url}</Text>
-                                    </View>
-                                )}
-
-                                {selectedEntry?.notes && (
-                                    <View>
-                                        <Text style={styles.detailName}>Notes</Text>
-                                        <Text style={styles.text}>{selectedEntry?.notes}</Text>
-                                    </View>
-                                )}
-
-                                <TouchableOpacity style={styles.editButton}>
                                     <Text
-                                        style={styles.buttonText}
-                                        onPress={startEditing}>
-                                        Edit Entry</Text>
-                                </TouchableOpacity>
+                                        style={styles.deleteText}
+                                        onPress={handleDeleteEntry}>
+                                        Delete Entry
+                                    </Text>
 
-                                <Text style={styles.deleteText}>Delete Entry</Text>
-
-                            </ScrollView>
-                        )}
+                                </ScrollView>
+                            )}
 
                     </KeyboardAvoidingView>
                 </Animated.View>
@@ -365,6 +407,10 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.2,
         shadowRadius: 6
     },
+    buttonDelete: {
+        alignSelf: 'center',
+        width: '40%',
+    },
     buttonText: {
         color: MAIN_LIGHT_BLUE,
         fontWeight: 'bold'
@@ -408,4 +454,9 @@ const styles = StyleSheet.create({
     inputError: {
         borderColor: 'red',
     },
+    deletedEntryText: {
+        color: MAIN_SAVE_GREEN,
+        fontWeight: 'bold',
+        alignSelf: 'center'
+    }
 })
