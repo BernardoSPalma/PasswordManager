@@ -1,5 +1,5 @@
 import { API_URL } from '@/constants/api';
-import { MAIN_LIGHT_BLUE, MAIN_WHITE } from '@/constants/Colors';
+import { MAIN_DARK_BLUE, MAIN_LIGHT_BLUE, MAIN_WHITE } from '@/constants/Colors';
 import { Ionicons } from '@expo/vector-icons';
 import axios from 'axios';
 import { router, useFocusEffect } from 'expo-router';
@@ -10,6 +10,7 @@ import { ActivityIndicator, FlatList, StyleSheet, Text, TouchableOpacity, View }
 type Entry = {
   id: number,
   name: string,
+  label: string | null,
   url: string,
   createdAt: string
 }
@@ -17,6 +18,7 @@ type Entry = {
 type EntryDetail = {
   id: number,
   name: string,
+  label: string | null,
   username: string,
   password: string,
   url: string,
@@ -28,7 +30,7 @@ export default function EntriesScreen() {
   const [list, setList] = useState<Entry[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  
+
   async function fetchEntries() {
     const token = await SecureStore.getItemAsync('token');
 
@@ -75,13 +77,21 @@ export default function EntriesScreen() {
   return (
     <View style={styles.container}>
       <FlatList
-      style={styles.flatList}
+        style={styles.flatList}
         data={list}
         keyExtractor={(entry) => entry.id.toString()}
         renderItem={({ item }) => (
           <TouchableOpacity onPress={() => router.push(`/entry-detail?id=${item.id}`)}>
             <View style={styles.entryContainer}>
-              <Text style={styles.text}>{item.name} </Text>
+
+              <View style={styles.textContainer}>
+                <Text style={styles.text}>{item.name} </Text>
+                {item.label ?
+                  <Text style={styles.labelText}>{item.label} </Text> : null}
+              </View>
+
+              <Ionicons name="chevron-forward" size={20} color={MAIN_DARK_BLUE}/>
+
             </View>
           </TouchableOpacity>
         )}
@@ -106,10 +116,20 @@ const styles = StyleSheet.create({
     marginBottom: 10
   },
   entryContainer: {
-    backgroundColor: MAIN_LIGHT_BLUE,
+    backgroundColor: MAIN_WHITE,
+    borderColor: MAIN_DARK_BLUE,
+    borderWidth: 1,
     borderRadius: 8,
     padding: 15,
-    marginBottom: 15
+    marginBottom: 15,
+    height: 70,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center'
+  },
+  textContainer:{
+    flexDirection: 'column',
+    flex:1
   },
   createButton: {
     backgroundColor: MAIN_LIGHT_BLUE,
@@ -128,7 +148,13 @@ const styles = StyleSheet.create({
     marginTop: 20
   },
   text: {
-    color: MAIN_WHITE,
+    color: 'black',
+    fontWeight: 'bold',
+    fontSize: 16
+  },
+  labelText: {
+    color: MAIN_LIGHT_BLUE,
+    fontSize: 14,
     fontWeight: 'bold'
   }
 });

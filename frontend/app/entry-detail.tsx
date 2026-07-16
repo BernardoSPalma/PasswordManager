@@ -11,6 +11,7 @@ import Animated, { SlideInDown, SlideOutDown } from 'react-native-reanimated';
 type EntryDetail = {
     id: number,
     name: string,
+    label: string,
     username: string,
     password: string,
     url: string,
@@ -26,6 +27,7 @@ export default function CreateDetailsScreen() {
     //editing mode
     const [isEditing, setIsEditing] = useState(false);
     const [username, setUsername] = useState('')
+    const [label, setLabel] = useState('')
     const [password, setPassword] = useState('')
     const [url, setUrl] = useState('')
     const [notes, setNotes] = useState('')
@@ -68,6 +70,7 @@ export default function CreateDetailsScreen() {
     function startEditing() {
         if (selectedEntry) {
             setUsername(selectedEntry.username)
+            setLabel(selectedEntry.label)
             setPassword(selectedEntry.password)
             setUrl(selectedEntry.url || '')
             setNotes(selectedEntry.notes || '')
@@ -194,6 +197,13 @@ export default function CreateDetailsScreen() {
                                         onChangeText={setUsername}
                                         placeholder="Email/Username" />
 
+                                    <Text style={[styles.detailName]}>Label</Text>
+                                    <TextInput
+                                        style={styles.input}
+                                        value={label}
+                                        onChangeText={setLabel}
+                                        placeholder="Label (ex: school)" />
+
 
                                     <Text style={styles.detailName}>Password <Text style={styles.required}>*</Text></Text>
                                     <TextInput
@@ -245,6 +255,13 @@ export default function CreateDetailsScreen() {
 
                                     <Text style={styles.detailName}>Username</Text>
                                     <Text style={styles.text}>{selectedEntry?.username}</Text>
+
+                                    {selectedEntry?.label && (
+                                        <View>
+                                            <Text style={styles.detailName}>Label</Text>
+                                            <Text style={styles.text}>{selectedEntry?.label}</Text>
+                                        </View>
+                                    )}
 
                                     <Text style={styles.detailName}>Password</Text>
                                     <Text style={styles.text}>{selectedEntry?.password}</Text>

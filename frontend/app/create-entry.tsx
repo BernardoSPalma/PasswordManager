@@ -33,13 +33,13 @@ export default function CreateEntryScreen() {
 
     try {
       setLoading(true);
-      const name = label ? `${serviceName} (${label})` : serviceName;
       await axios.post(`${API_URL}/api/entries`, {
         username: username,
+        label: label,
         password: password,
         url: url,
         notes: notes,
-        serviceName: name
+        serviceName: serviceName
       }, {
         headers: {
           Authorization: `Bearer ${token}`,
