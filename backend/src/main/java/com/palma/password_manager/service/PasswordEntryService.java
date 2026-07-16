@@ -23,11 +23,11 @@ public class PasswordEntryService {
         this.passwordEntryRepository = passwordEntryRepository;
     }
 
-    public void createNewEntry(User user, String username, String password, String url, String notes, String serviceName, SecretKey key) throws Exception{
+    public void createNewEntry(User user, String username, String label, String password, String url, String notes, String serviceName, SecretKey key) throws Exception{
         byte[] encryptedUsername = cryptoService.encryptData(username.getBytes(StandardCharsets.UTF_8),key);
         byte[] encryptedPassword = cryptoService.encryptData(password.getBytes(StandardCharsets.UTF_8),key);
         byte[] encryptedNotes = notes != null ? cryptoService.encryptData(notes.getBytes(StandardCharsets.UTF_8),key) : null;
-        PasswordEntry entry = createPasswordEntry(user, encryptedUsername, encryptedPassword, encryptedNotes, url, serviceName);
+        PasswordEntry entry = createPasswordEntry(user, label, encryptedUsername, encryptedPassword, encryptedNotes, url, serviceName);
         passwordEntryRepository.save(entry);
     }
 
@@ -43,10 +43,10 @@ public class PasswordEntryService {
         String notes  = dataToDecrypt.getNotesEncrypted() != null
                 ? new String(cryptoService.decryptData(dataToDecrypt.getNotesEncrypted(),key),StandardCharsets.UTF_8)
                 : null;
-        return new PasswordEntryDTO(dataToDecrypt.getId(), dataToDecrypt.getName(), username, password, dataToDecrypt.getUrl(), notes, dataToDecrypt.getCreatedAt(), dataToDecrypt.getUpdatedAt());
+        return new PasswordEntryDTO(dataToDecrypt.getId(), dataToDecrypt.getName(), dataToDecrypt.getLabel(), username, password, dataToDecrypt.getUrl(), notes, dataToDecrypt.getCreatedAt(), dataToDecrypt.getUpdatedAt());
     }
 
-    public void updateEntry(User user, String newUsername, String newPassword,String newUrl, String newNotes, long entryId, SecretKey key) throws Exception{
+    public void updateEntry(User user, String newLabel, String newUsername, String newPassword,String newUrl, String newNotes, long entryId, SecretKey key) throws Exception{
         PasswordEntry dataToUpdate = passwordEntryRepository.findById(entryId).orElseThrow(() -> new IllegalArgumentException("Entry not found"));
         checkEntryBelongToUser(user, dataToUpdate);
         byte[] encryptedUsername = newUsername != null
@@ -60,6 +60,14 @@ public class PasswordEntryService {
         }
         if(encryptedPassword != null){
             dataToUpdate.setPasswordEncrypted(encryptedPassword);
+        }
+        if(newLabel != null){
+            if(newLabel.isEmpty()){
+                dataToUpdate.setLabel(null);
+            }
+            else{
+                dataToUpdate.setLabel(newLabel);
+            }
         }
         if(newUrl != null){
             if(newUrl.isEmpty()){
@@ -94,9 +102,10 @@ public class PasswordEntryService {
         }
     }
 
-    private PasswordEntry createPasswordEntry(User user, byte[] encryptedUsername, byte[] encryptedPassword, byte[] encryptedNotes, String url, String serviceName){
+    private PasswordEntry createPasswordEntry(User user, String label, byte[] encryptedUsername, byte[] encryptedPassword, byte[] encryptedNotes, String url, String serviceName){
         PasswordEntry entry = new PasswordEntry();
         entry.setUser(user);
+        entry.setLabel(label);
         entry.setUsernameEncrypted(encryptedUsername);
         entry.setPasswordEncrypted(encryptedPassword);
         entry.setNotesEncrypted(encryptedNotes);

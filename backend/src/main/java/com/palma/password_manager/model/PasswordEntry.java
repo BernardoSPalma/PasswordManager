@@ -16,6 +16,9 @@ public class PasswordEntry {
     @Column(nullable = false)
     private String name;
 
+    @Column
+    private String label;
+
     @Column(nullable = false)
     private byte[] usernameEncrypted;
 
@@ -47,6 +50,14 @@ public class PasswordEntry {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getLabel(){
+        return this.label;
+    }
+
+    public void setLabel(String label){
+        this.label = label;
     }
 
     public byte[] getUsernameEncrypted() {

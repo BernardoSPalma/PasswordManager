@@ -6,17 +6,19 @@ import java.time.LocalDateTime;
 
 public class PasswordEntryDTO {
 
-    private Long id;
-    private String name;
-    private String username;
-    private String password;
-    private String url;
-    private String notes;
-    private LocalDateTime createdAt, updatedAt;
+    private final Long id;
+    private final String name;
+    private final String label;
+    private final String username;
+    private final String password;
+    private final String url;
+    private final String notes;
+    private final LocalDateTime createdAt, updatedAt;
 
-    public PasswordEntryDTO(long id, String name, String username, String password, String url, String notes, LocalDateTime createdAt, LocalDateTime updatedAt){
+    public PasswordEntryDTO(long id, String name, String label, String username, String password, String url, String notes, LocalDateTime createdAt, LocalDateTime updatedAt){
         this.id = id;
         this.name = name;
+        this.label = label;
         this.username = username;
         this.password = password;
         this.url = url;
@@ -31,6 +33,10 @@ public class PasswordEntryDTO {
 
     public String getName() {
         return name;
+    }
+
+    public String getLabel(){
+        return label;
     }
 
     public String getUsername() {

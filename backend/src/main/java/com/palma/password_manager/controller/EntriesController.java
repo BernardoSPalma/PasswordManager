@@ -40,7 +40,7 @@ public class EntriesController {
     @PostMapping()
     public ResponseEntity<Void> createEntry(@RequestBody CreateEntryRequest createEntryRequest) throws Exception{
         User user = getAuthenticatedUser();
-        this.passwordEntryService.createNewEntry(user,createEntryRequest.getUsername(),createEntryRequest.getPassword(),createEntryRequest.getUrl(),createEntryRequest.getNotes(),createEntryRequest.getServiceName(), AesKeyHolder.get());
+        this.passwordEntryService.createNewEntry(user, createEntryRequest.getUsername(), createEntryRequest.getLabel(), createEntryRequest.getPassword(),createEntryRequest.getUrl(),createEntryRequest.getNotes(),createEntryRequest.getServiceName(), AesKeyHolder.get());
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
@@ -53,7 +53,7 @@ public class EntriesController {
     @PutMapping("/{id}")
     public ResponseEntity<Void> updateEntry(@PathVariable Long id, @RequestBody UpdateEntryRequest updateEntryRequest) throws Exception{
         User user = getAuthenticatedUser();
-        this.passwordEntryService.updateEntry(user, updateEntryRequest.getUsername(),updateEntryRequest.getPassword(), updateEntryRequest.getUrl(), updateEntryRequest.getNotes(),id,AesKeyHolder.get());
+        this.passwordEntryService.updateEntry(user,  updateEntryRequest.getLabel(), updateEntryRequest.getUsername(), updateEntryRequest.getPassword(), updateEntryRequest.getUrl(), updateEntryRequest.getNotes(),id,AesKeyHolder.get());
         return ResponseEntity.noContent().build();
     }
 
