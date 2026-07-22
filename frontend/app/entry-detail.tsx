@@ -369,7 +369,7 @@ const styles = StyleSheet.create({
     },
     detailName: {
         fontWeight: 'bold',
-        color: MAIN_LIGHT_BLUE,
+        color: MAIN_DARK_BLUE,
         fontSize: 16
     },
     editButton: {

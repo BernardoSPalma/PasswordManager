@@ -6,6 +6,7 @@ import { router, useFocusEffect } from 'expo-router';
 import * as SecureStore from 'expo-secure-store';
 import { useCallback, useState } from 'react';
 import { ActivityIndicator, FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 type Entry = {
   id: number,
@@ -75,7 +76,9 @@ export default function EntriesScreen() {
   }
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
+      <Text style={styles.mainTitle}>Passwords</Text>
+      
       <FlatList
         style={styles.flatList}
         data={list}
@@ -101,7 +104,7 @@ export default function EntriesScreen() {
         onPress={() => router.push('/create-entry')} style={styles.createButton}>
         <Ionicons name={"add"} size={24} color="white" />
       </TouchableOpacity>
-    </View>
+    </SafeAreaView>
   );
 }
 const styles = StyleSheet.create({
@@ -130,6 +133,16 @@ const styles = StyleSheet.create({
   textContainer:{
     flexDirection: 'column',
     flex:1
+  },
+  mainTitle: {
+    color:MAIN_LIGHT_BLUE,
+    alignSelf: 'center',
+    fontSize: 35,
+    marginTop: 20,
+    fontWeight: 'bold',
+    textShadowColor: 'rgba(0, 122,255, 0.2)',
+    textShadowOffset: {width: 0, height: 0},
+    textShadowRadius: 15
   },
   createButton: {
     backgroundColor: MAIN_LIGHT_BLUE,
