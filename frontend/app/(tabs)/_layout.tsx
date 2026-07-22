@@ -1,5 +1,6 @@
-import { MAIN_LIGHT_BLUE, MAIN_WHITE } from '@/constants/Colors';
+import { MAIN_LIGHT_BLUE } from '@/constants/Colors';
 import { Ionicons } from '@expo/vector-icons';
+import { BlurView } from 'expo-blur';
 import { Tabs, router } from 'expo-router';
 import React from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
@@ -15,6 +16,15 @@ export default function TabLayout() {
         tabBarStyle: styles.floatingTabBar,
         tabBarItemStyle: styles.tabBarItem,
         tabBarIconStyle: styles.tabBarIcon,
+        tabBarBackground: () => (
+          <BlurView
+            tint="light" // "light", "dark" ou "systemChromeMaterial"
+            intensity={80} // Intensidade do desfoque (0 a 100)
+            experimentalBlurMethod="dimezisBlurView" // Suporte para Android
+            style={StyleSheet.absoluteFill}
+          />
+        ),
+
       }}
     >
       <Tabs.Screen
@@ -79,8 +89,11 @@ const styles = StyleSheet.create({
     bottom: 50,
     height: 65,
     borderRadius: 35,
-    backgroundColor: MAIN_WHITE,
+    overflow: 'hidden',
+    backgroundColor:'rgba(255, 255, 255, 0.65)',
     borderTopWidth: 0,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.5)',
     elevation: 10,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 5 },
