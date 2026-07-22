@@ -77,7 +77,7 @@ export default function EntriesScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.mainTitle}>Passwords</Text>
+      <Text style={styles.mainTitle}>My Passwords</Text>
       
       <FlatList
         style={styles.flatList}
@@ -100,10 +100,6 @@ export default function EntriesScreen() {
         )}
       />
 
-      <TouchableOpacity
-        onPress={() => router.push('/create-entry')} style={styles.createButton}>
-        <Ionicons name={"add"} size={24} color="white" />
-      </TouchableOpacity>
     </SafeAreaView>
   );
 }
@@ -137,23 +133,9 @@ const styles = StyleSheet.create({
   mainTitle: {
     color:MAIN_LIGHT_BLUE,
     alignSelf: 'center',
-    fontSize: 35,
+    fontSize: 30,
     marginTop: 20,
     fontWeight: 'bold',
-    textShadowColor: 'rgba(0, 122,255, 0.2)',
-    textShadowOffset: {width: 0, height: 0},
-    textShadowRadius: 15
-  },
-  createButton: {
-    backgroundColor: MAIN_LIGHT_BLUE,
-    position: 'absolute',
-    bottom: 20,
-    right: 20,
-    height: 60,
-    width: 60,
-    borderRadius: 30,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   flatList: {
     width: '80%',
